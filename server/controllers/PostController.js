@@ -23,12 +23,12 @@ class PostController {
   }
   static async createPost(req, res) {
     try {
-      const { imgpost, caption, userID, status } = req.body;
+      const { imgpost, caption, userId, status } = req.body;
       console.log([req.body]);
       let result = await posts.create({
         imgpost,
         caption,
-        userID,
+        userId,
         status,
       });
       res.status(201).json(result);
@@ -39,10 +39,10 @@ class PostController {
 
   static async editPost(req, res) {
     try {
-      const { imgpost, caption, userID, status } = req.body;
+      const { imgpost, caption, userId, status } = req.body;
       let id = +req.params.id;
       let result = await posts.update(
-        { imgpost, caption, userID, status },
+        { imgpost, caption, userId, status },
         { where: { id: id } }
       );
       console.log([req.body]);
