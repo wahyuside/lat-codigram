@@ -1,4 +1,7 @@
 const userRoutes = require("express").Router();
 const userController = require("../controllers/UserController");
 
-module.exports = userRoutes
+userRoutes.get("/", userController.getUsers);
+userRoutes.post("/register", userController.register);
+
+module.exports = userRoutes;
