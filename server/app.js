@@ -13,8 +13,8 @@ app.use(
 const cors = require("cors");
 app.use(cors());
 
-// const routes = require("./routes");
-// app.use(routes);
+const routes = require("./routes");
+app.use(routes);
 
 console.log("Testing server");
 
