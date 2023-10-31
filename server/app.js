@@ -3,9 +3,11 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 3200;
 
+const bodyParser = require("body-parser");
 app.use(express.json());
+app.use(bodyParser.json());
 app.use(
-  express.urlencoded({
+  bodyParser.urlencoded({
     extended: true,
   })
 );
@@ -15,6 +17,8 @@ app.use(cors());
 
 const routes = require("./routes");
 app.use(routes);
+
+app.use("/img/", express.static("./img"));
 
 console.log("Testing server");
 

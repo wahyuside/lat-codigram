@@ -21,6 +21,11 @@ module.exports = (sequelize, DataTypes) => {
       role: DataTypes.STRING,
     },
     {
+      // hooks: {
+      //   beforeCreate: function (users, option) {
+      //     users.imgprf = user.imgprf || "/img/profile/default.jpg";
+      //   },
+      // },
       sequelize,
       modelName: "users",
     }

@@ -1,4 +1,5 @@
 const { users, posts } = require("../models");
+const { tokenGenerator, tokenVerify } = require("../helpers/jsonwebtoken");
 
 class PostController {
   static async getAllPosts(req, res) {
@@ -10,6 +11,17 @@ class PostController {
       res.status(500).json("Error " + error);
     }
   }
+
+  static async getUserPosts(req, res) {
+    try {
+      let result = await posts.findAll({ where: { id: req.params.id } });
+      console.log(result);
+      res.status(200).json(result);
+    } catch (error) {
+      res.status(500).json("Error " + error);
+    }
+  }
+
   static async getPost(req, res) {
     try {
       let id = +req.params.id;
@@ -24,12 +36,16 @@ class PostController {
   static async createPost(req, res) {
     try {
       const { imgpost, caption, userId, status } = req.body;
-      console.log([req.body]);
+      const aksesToken = req.headers.token;
+      console.log([req.body, req.headers]);
+
+      let UserId = tokenVerify(aksesToken).id;
       let result = await posts.create({
         imgpost,
         caption,
         userId,
         status,
+        UserId,
       });
       res.status(201).json(result);
     } catch (error) {

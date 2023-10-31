@@ -1,4 +1,6 @@
 const { users, posts } = require("../models");
+const { encryptPwd, decryptPwd } = require("../helpers/bcrypt");
+const { tokenGenerator, tokenVerify } = require("../helpers/jsonwebtoken");
 
 class UserController {
   static async getAllUsers(req, res) {
@@ -24,11 +26,16 @@ class UserController {
   static async register(req, res) {
     try {
       const { username, email, password, imgprf, role } = req.body;
-      console.log([req.body]);
+      // const salt = bcrypt.genSaltSync(5);
+      // const passhass = bcrypt.hashSync(password, salt);
+      console.log(req.body);
       let result = await users.create({
         username,
         email,
-        password,
+        // password: passhass,
+        // password,
+        password: encryptPwd(password),
+        // imgprf: req.file.path,
         imgprf,
         role,
       });
@@ -43,7 +50,7 @@ class UserController {
       const { username, email, password, imgprf, role } = req.body;
       let id = +req.params.id;
       let result = await users.update(
-        { username, email, password, imgprf, role },
+        { username, email, password: encryptPwd(password), imgprf, role },
         { where: { id: id } },
         { returning: true }
       );
@@ -67,6 +74,30 @@ class UserController {
       res.status(201).json(result);
     } catch (error) {
       res.status(500).json("Error " + error);
+    }
+  }
+
+  static async login(req, res) {
+    try {
+      let { username, password } = req.body;
+      let emailFound = await users.findOne({
+        where: { username },
+      });
+      if (emailFound) {
+        if (decryptPwd(password, emailFound.password)) {
+          let aksesToken = tokenGenerator(emailFound);
+          console.log(aksesToken);
+          res.status(201).json(aksesToken);
+          let cekToken = tokenVerify(aksesToken);
+          console.log(cekToken);
+        } else {
+          res.status(400).json({ message: "invalid password" });
+        }
+      } else {
+        res.status(400).json({ message: "user not found" });
+      }
+    } catch (error) {
+      res.status(500).json("error " + error);
     }
   }
 }
