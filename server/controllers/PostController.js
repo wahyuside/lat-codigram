@@ -1,5 +1,4 @@
 const { users, posts } = require("../models");
-const { tokenGenerator, tokenVerify } = require("../helpers/jsonwebtoken");
 
 class PostController {
   static async getAllPosts(req, res) {
@@ -36,10 +35,10 @@ class PostController {
   static async createPost(req, res) {
     try {
       const { imgpost, caption, userId, status } = req.body;
-      const aksesToken = req.headers.token;
-      console.log([req.body, req.headers]);
+      // const aksesToken = req.headers.token;
+      // console.log(req.userData);
 
-      let UserId = tokenVerify(aksesToken).id;
+      let UserId = +req.userData.id;
       let result = await posts.create({
         imgpost,
         caption,
